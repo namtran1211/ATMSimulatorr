@@ -23,37 +23,42 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean isValidPin(String accountNumber, String inputPIN) {
-        boolean bl = true;
         if (inputPIN.length() != 6) {
             System.out.println("PIN should have 6 digits length");
-            bl = false;
+            return false;
         }
         if (!inputPIN.matches("^[0-9]*$")) {
             System.out.println("PIN should only contains numbers");
-            bl = false;
+            return false;
         }
         Account accountByAccNumber = getAccountByAccNumber(accountNumber);
-        if (!accountByAccNumber.getPin().equals(inputPIN)) {
-            System.out.println("Invalid PIN Number");
+        if (accountByAccNumber == null || !accountByAccNumber.getPin().equals(inputPIN)) {
+            System.out.println("Invalid Account Number/PIN");
+            return false;
         }
-        return bl;
+        return true;
     }
 
     @Override
     public boolean isValidAccountNumber(String accountNumber) {
-        boolean bl = true;
         if (accountNumber.length() != 6) {
             System.out.println("Account Number should have 6 digits length");
-            bl = false;
+            return false;
         }
         if (!accountNumber.matches("^[0-9]*$")) {
             System.out.println("Account Number should only contains numbers");
-            bl = false;
+            return false;
         }
-        if (getAccountByAccNumber(accountNumber) == null) {
-            System.out.println("Invalid Account Number");
-            bl = false;
+        return true;
+    }
+
+    @Override
+    public boolean isExistedAccount(String accountNumber) {
+        Account accountByAccNumber = getAccountByAccNumber(accountNumber);
+        if (accountByAccNumber == null) {
+            System.out.println("Invalid account");
+            return false;
         }
-        return bl;
+        return true;
     }
 }

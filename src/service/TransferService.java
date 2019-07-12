@@ -3,7 +3,7 @@ package service;
 import model.Account;
 
 public interface TransferService {
-    boolean isValidTransferAmount(int transferAmount, int balance);
+    boolean isValidTransferAmount(String transferAmount, int balance);
 
     boolean isValidReferenceNumber(String referenceNumber);
 

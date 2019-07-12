@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 class TransactionScreen {
     void transaction_menu(Account account) {
-        int choice;
+        String choice;
         do {
             System.out.println("----------------------------------------");
             System.out.println("----Transaction Screen----");
@@ -15,23 +15,23 @@ class TransactionScreen {
             System.out.println("3. Exit");
             System.out.print("Please choose option[3]: ");
             Scanner scanner = new Scanner(System.in);
-            choice = scanner.nextInt();
-
+            choice = scanner.nextLine();
+            WelcomeScreen welcomeScreen = new WelcomeScreen();
             switch (choice) {
-                case 1:
+                case "1":
                     WithDrawScreen withDrawScreen = new WithDrawScreen();
                     withDrawScreen.withdraw_menu(account);
                     break;
-                case 2:
+                case "2":
                     FundTransferScreen transferScreen = new FundTransferScreen();
                     transferScreen.fund_transfer_account(account);
                     break;
-                case 3:
-                    WelcomeScreen welcomeScreen = new WelcomeScreen();
+                case "":
+                case "3":
                     welcomeScreen.welcome_menu();
                     break;
             }
-        } while (choice != 3);
+        } while (!choice.equals("3"));
 
     }
 }

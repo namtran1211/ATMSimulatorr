@@ -12,4 +12,6 @@ public interface AccountService {
     boolean isValidPin(String accountNumber, String inputPIN);
 
     boolean isValidAccountNumber(String accountNumber);
+
+    boolean isExistedAccount(String accountNumber);
 }

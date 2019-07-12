@@ -15,6 +15,7 @@ class FundTransferScreen {
 
     void fund_transfer_account(Account account) {
         boolean validAccountNumber;
+        boolean existedAccount;
         do {
             System.out.println("----------------------------------------");
             System.out.print("Please enter destination account and \n" +
@@ -23,10 +24,11 @@ class FundTransferScreen {
             Scanner scanner = new Scanner(System.in);
             String destinationAccount = scanner.next();
             validAccountNumber = accountService.isValidAccountNumber(destinationAccount);
-            if (validAccountNumber) {
+            existedAccount = accountService.isExistedAccount(destinationAccount);
+            if (validAccountNumber && existedAccount) {
                 fund_transfer_transferAmount(account, destinationAccount);
             }
-        } while (!validAccountNumber);
+        } while (!(validAccountNumber && existedAccount));
 
     }
 
@@ -41,7 +43,7 @@ class FundTransferScreen {
             String transferAmount = scanner.next();
             Utils utils = new Utils();
             int balance = Integer.valueOf(utils.formatCurrency(account.getBalance()));
-            validTransferAmount = transferService.isValidTransferAmount(Integer.valueOf(transferAmount), balance);
+            validTransferAmount = transferService.isValidTransferAmount(transferAmount, balance);
             if (validTransferAmount) {
                 fund_transfer_referenceNumber(destination, Integer.valueOf(transferAmount), account);
             }
@@ -49,24 +51,24 @@ class FundTransferScreen {
     }
 
     private void fund_transfer_referenceNumber(String destination, int transferAmount, Account account) {
-        boolean validReferenceNumber;
+        boolean validReferenceNumber = false;
         do {
             System.out.println("----------------------------------------");
             System.out.print("Please enter reference number (Optional) and \n" +
                     "press enter to continue or \n" +
                     "press cancel (Esc) to go back to Transaction: ");
             Scanner scanner = new Scanner(System.in);
-            String referenceId = scanner.next();
-            validReferenceNumber = transferService.isValidReferenceNumber(referenceId);
-            if (validReferenceNumber) {
-                fund_transfer_confirm(destination, transferAmount, referenceId, account);
+            String referenceId = scanner.nextLine();
+            if (!referenceId.isEmpty()) {
+                validReferenceNumber = transferService.isValidReferenceNumber(referenceId);
             }
+            fund_transfer_confirm(destination, transferAmount, referenceId, account);
         } while (!validReferenceNumber);
 
     }
 
     private void fund_transfer_confirm(String destination, int transferAmount, String referenceNumber, Account account) {
-        int choice;
+        String choice;
         do {
             System.out.println("----------------------------------------");
             System.out.println("Transfer Confirmation");
@@ -77,16 +79,18 @@ class FundTransferScreen {
             System.out.println("2. Cancel Trx");
             System.out.print("Choose option[2]: ");
             Scanner scanner = new Scanner(System.in);
-            choice = scanner.nextInt();
+            choice = scanner.nextLine();
             switch (choice) {
-                case 1:
+                case "1":
                     Account transferAccount = transferService.transfer(destination, account, transferAmount);
                     fund_transfer_summary(destination, transferAmount, referenceNumber, transferAccount);
-                case 2:
+                case "":
+                    fund_transfer_account(account);
+                case "2":
                     WelcomeScreen welcomeScreen = new WelcomeScreen();
                     welcomeScreen.welcome_menu();
             }
-        } while (choice != 2);
+        } while (!choice.equals("2"));
     }
 
     private void fund_transfer_summary(String destination, int transferAmount, String referenceNumber, Account account) {

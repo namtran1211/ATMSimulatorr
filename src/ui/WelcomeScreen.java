@@ -15,7 +15,7 @@ public class WelcomeScreen {
         do {
             System.out.println("----------------------------------------");
             System.out.println("-----Welcome-----");
-            System.out.print("Enter model.Account Number: ");
+            System.out.print("Enter Account Number: ");
             accountInput = scanner.next();
             bl = accountService.isValidAccountNumber(accountInput);
         } while (!bl);

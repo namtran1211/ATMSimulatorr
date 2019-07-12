@@ -1,29 +1,27 @@
 package service.impl;
 
 import model.Account;
-import service.AccountService;
 import service.TransferService;
 import utils.Utils;
 
 public class TransferServiceImpl implements TransferService {
 
-    AccountService accountService = new AccountServiceImpl();
     @Override
-    public boolean isValidTransferAmount(int transferAmount, int balance) {
-        if (!String.valueOf(transferAmount).matches("^[0-9]*$")) {
+    public boolean isValidTransferAmount(String transferAmount, int balance) {
+        if (!transferAmount.matches("^[0-9]*$")) {
             System.out.println("Invalid amount");
             return false;
         }
-        if (transferAmount > 1000) {
+        if (Integer.valueOf(transferAmount) > 1000) {
             System.out.println("Maximum amount to transfer is $1000");
             return false;
         }
 
-        if (transferAmount < 1) {
+        if (Integer.valueOf(transferAmount) < 1) {
             System.out.println("Minimum  amount to transfer is $1");
             return false;
         }
-        if (balance - transferAmount < 0) {
+        if (balance - Integer.valueOf(transferAmount) < 0) {
             System.out.println("Insufficient balance $" + transferAmount);
             return false;
         }
