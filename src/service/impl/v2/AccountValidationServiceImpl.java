@@ -1,12 +1,10 @@
 package service.impl.v2;
 
 import model.Account;
-import service.AccountService;
 import service.AccountValidationService;
-import service.impl.AccountServiceImpl;
 
 public class AccountValidationServiceImpl implements AccountValidationService {
-    AccountService accountService = new AccountServiceImpl();
+    private AccountServiceV2 accountService = new AccountServiceImplV2();
 
     @Override
     public boolean isValidPin(String accountNumber, String inputPIN) {
@@ -19,7 +17,7 @@ public class AccountValidationServiceImpl implements AccountValidationService {
             return false;
         }
         Account accountByAccNumber = accountService.getAccountByAccNumber(accountNumber);
-        if (accountByAccNumber == null || !accountByAccNumber.getPin().equals(inputPIN)) {
+        if (accountByAccNumber == null || !accountByAccNumber.getPin().replaceAll("^\"|\"$", "").equals(inputPIN)) {
             System.out.println("Invalid Account Number/PIN");
             return false;
         }

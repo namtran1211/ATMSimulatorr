@@ -1,15 +1,20 @@
 package ui;
 
 import model.Account;
-import service.AccountService;
-import service.impl.AccountServiceImpl;
+import service.AccountValidationService;
+import service.impl.v2.AccountServiceImplV2;
+import service.impl.v2.AccountServiceV2;
+import service.impl.v2.AccountValidationServiceImpl;
 
 import java.util.Scanner;
 
 public class WelcomeScreen {
-    private AccountService accountService = new AccountServiceImpl();
+    private AccountServiceV2 accountService = new AccountServiceImplV2();
+    private AccountValidationService validationService = new AccountValidationServiceImpl();
+
     public void welcome_menu() {
-        boolean bl;
+        boolean validAccountNumber;
+        boolean validPin;
         Scanner scanner = new Scanner(System.in);
         String accountInput;
         do {
@@ -17,13 +22,11 @@ public class WelcomeScreen {
             System.out.println("-----Welcome-----");
             System.out.print("Enter Account Number: ");
             accountInput = scanner.next();
-            bl = accountService.isValidAccountNumber(accountInput);
-        } while (!bl);
-        do {
             System.out.print("Enter PIN: ");
             String pinInput = scanner.next();
-            bl = accountService.isValidPin(accountInput, pinInput);
-        } while (!bl);
+            validAccountNumber = validationService.isValidAccountNumber(accountInput);
+            validPin = validationService.isValidPin(accountInput, pinInput);
+        } while (!(validPin && validAccountNumber));
         TransactionScreen transactionScreen = new TransactionScreen();
         Account accountByAccNumber = accountService.getAccountByAccNumber(accountInput);
         transactionScreen.transaction_menu(accountByAccNumber);

@@ -2,15 +2,21 @@ package ui;
 
 import model.Account;
 import service.AccountService;
+import service.AccountValidationService;
 import service.TransferService;
 import service.impl.AccountServiceImpl;
 import service.impl.TransferServiceImpl;
+import service.impl.v2.AccountServiceImplV2;
+import service.impl.v2.AccountServiceV2;
+import service.impl.v2.AccountValidationServiceImpl;
+import utils.Constant;
 import utils.Utils;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 class FundTransferScreen {
-    private AccountService accountService = new AccountServiceImpl();
+    private AccountValidationService validationService = new AccountValidationServiceImpl();
     private TransferService transferService = new TransferServiceImpl();
 
     void fund_transfer_account(Account account) {
@@ -23,8 +29,8 @@ class FundTransferScreen {
                     "press cancel (Esc) to go back to Transaction: ");
             Scanner scanner = new Scanner(System.in);
             String destinationAccount = scanner.next();
-            validAccountNumber = accountService.isValidAccountNumber(destinationAccount);
-            existedAccount = accountService.isExistedAccount(destinationAccount);
+            validAccountNumber = validationService.isValidAccountNumber(destinationAccount);
+            existedAccount = validationService.isExistedAccount(destinationAccount);
             if (validAccountNumber && existedAccount) {
                 fund_transfer_transferAmount(account, destinationAccount);
             }
@@ -42,7 +48,7 @@ class FundTransferScreen {
             Scanner scanner = new Scanner(System.in);
             String transferAmount = scanner.next();
             Utils utils = new Utils();
-            int balance = Integer.valueOf(utils.formatCurrency(account.getBalance()));
+            int balance = Integer.valueOf(utils.formatCurrency(account.getBalance().replaceAll("^\"|\"$", "")));
             validTransferAmount = transferService.isValidTransferAmount(transferAmount, balance);
             if (validTransferAmount) {
                 fund_transfer_referenceNumber(destination, Integer.valueOf(transferAmount), account);

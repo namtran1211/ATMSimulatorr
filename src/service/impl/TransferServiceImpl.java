@@ -2,9 +2,15 @@ package service.impl;
 
 import model.Account;
 import service.TransferService;
+import service.impl.v2.AccountServiceImplV2;
+import service.impl.v2.AccountServiceV2;
+import utils.Constant;
 import utils.Utils;
 
+import java.io.IOException;
+
 public class TransferServiceImpl implements TransferService {
+    private AccountServiceV2 accountServiceV2 = new AccountServiceImplV2();
 
     @Override
     public boolean isValidTransferAmount(String transferAmount, int balance) {
@@ -40,8 +46,13 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Account transfer(String destinationAccount, Account account, int transferAmount) {
         Utils utils = new Utils();
-        Integer balance = Integer.valueOf(utils.formatCurrency(account.getBalance()));
+        Integer balance = Integer.valueOf(utils.formatCurrency(account.getBalance().replaceAll("^\"|\"$", "")));
         account.setBalance("$" + (balance - transferAmount));
+        try {
+            accountServiceV2.updateAccountBalance(account.getAccountNumber(), account.getBalance(), Constant.FILE_NAME);
+        } catch (IOException e) {
+            System.out.print("cannot read csv file");
+        }
         return account;
     }
 }

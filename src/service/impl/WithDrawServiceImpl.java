@@ -30,7 +30,7 @@ public class WithDrawServiceImpl implements WithDrawService {
     @Override
     public Account withDraw(Account account, int withDraw) {
         Utils utils = new Utils();
-        Integer intBalance = Integer.valueOf(utils.formatCurrency(account.getBalance()));
+        Integer intBalance = Integer.valueOf(utils.formatCurrency(account.getBalance().replaceAll("^\"|\"$", "")));
         account.setBalance("$" + (intBalance - withDraw));
         return account;
     }

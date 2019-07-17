@@ -3,13 +3,18 @@ package ui;
 import model.Account;
 import service.WithDrawService;
 import service.impl.WithDrawServiceImpl;
+import service.impl.v2.AccountServiceImplV2;
+import service.impl.v2.AccountServiceV2;
+import utils.Constant;
 import utils.Utils;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
 class WithDrawScreen {
     private WithDrawService withDrawService = new WithDrawServiceImpl();
+    private AccountServiceV2 accountService = new AccountServiceImplV2();
 
     void withdraw_menu(Account account) {
         String choice;
@@ -68,14 +73,19 @@ class WithDrawScreen {
 
     private void withDraw(Account account, int withDraw) {
         Account account1 = withDrawService.withDraw(account, withDraw);
+        try {
+            accountService.updateAccountBalance(account.getAccountNumber(), account.getBalance(), Constant.FILE_NAME);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Cannot read csv file");
+        }
         SummaryScreen summaryScreen = new SummaryScreen();
         summaryScreen.summary_menu(account1, LocalDateTime.now().toString(), "$" + withDraw);
     }
 
     private boolean isValidWithDraw(Account account, String withDraw) {
         Utils utils = new Utils();
-        int balance = Integer.valueOf(utils.formatCurrency(account.getBalance()));
+        int balance = Integer.valueOf(utils.formatCurrency(account.getBalance().replaceAll("^\"|\"$", "")));
         return withDrawService.isValidWithDrawAmount(withDraw, balance);
     }
-
 }

@@ -2,6 +2,7 @@ package ui;
 
 import model.Account;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 class TransactionScreen {
